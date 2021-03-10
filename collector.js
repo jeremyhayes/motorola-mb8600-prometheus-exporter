@@ -2,8 +2,14 @@ import { HnapClient } from 'motorola-mb8600-client/client.js';
 import Prometheus from 'prom-client';
 
 export default async function collect() {
-    const client = new HnapClient();
-    await client.login();
+    const client = new HnapClient(
+        process.env.MODEM_BASE_URL || 'http://192.168.42.1',
+        !!process.env.MODEM_IGNORE_SSL
+    );
+    await client.login(
+        process.env.MODEM_USERNAME || 'admin',
+        process.env.MODEM_PASSWORD || 'motorola'
+    );
 
     const statistics = await client.getConnectionData();
 
