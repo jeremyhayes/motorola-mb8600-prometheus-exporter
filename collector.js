@@ -11,10 +11,10 @@ export default async function collect() {
         process.env.MODEM_PASSWORD || 'motorola'
     );
 
-    const statistics = await client.getConnectionData();
+    const downstreamInfo = await client.getDownstreamChannelInfoParsed();
+    const upstreamInfo = await client.getUpstreamChannelInfoParsed();
 
-    statistics
-        .downstream
+    downstreamInfo
         .forEach(x => {
             const labels = {
                 channel: x.channel,
@@ -35,8 +35,7 @@ export default async function collect() {
                 .set(labels, x.lockStatus === 'Locked' ? 1 : 0);
         });
 
-    statistics
-        .upstream
+    upstreamInfo
         .forEach(x => {
             const labels = {
                 channel: x.channel,

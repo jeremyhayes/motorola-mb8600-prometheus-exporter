@@ -14,7 +14,7 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "motorola-mb8600-client": "github:jeremyhayes/motorola-mb8600-client#9940f96",
+    "motorola-mb8600-client": "github:jeremyhayes/motorola-mb8600-client#023e261",
     "prom-client": "^13.1.0"
   }
 }
