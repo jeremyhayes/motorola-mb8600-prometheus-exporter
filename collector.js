@@ -11,10 +11,46 @@ export default async function collect() {
         process.env.MODEM_PASSWORD || 'motorola'
     );
 
-    const downstreamInfo = await client.getDownstreamChannelInfoParsed();
-    const upstreamInfo = await client.getUpstreamChannelInfoParsed();
+    // parallelize calls to update metrics
+    await Promise.all([
+        _collectDeviceInfo(client),
+        _collectConnectionInfo(client),
+        _collectDownstreamInfo(client),
+        _collectUpstreamInfo(client)
+    ]);
 
-    downstreamInfo
+    return Prometheus.register;
+}
+
+async function _collectDeviceInfo(client) {
+    const response = await client.getSoftware();
+    const responseData = response.GetMotoStatusSoftwareResponse;
+
+    deviceInfo
+        .set({
+            spec_version: responseData.StatusSoftwareSpecVer,
+            hardware_version: responseData.StatusSoftwareHdVer,
+            software_version: responseData.StatusSoftwareSfVer,
+            customer_version: responseData.StatusSoftwareCustomerVer,
+            mac_address: responseData.StatusSoftwareMac,
+            serial_number: responseData.StatusSoftwareSerialNum
+        }, 1);
+}
+
+async function _collectConnectionInfo(client) {
+    const response = await client.getConnectionInfo();
+    const responseData = response.GetMotoStatusConnectionInfoResponse;
+
+    connectionInfo
+        .set({
+            uptime: responseData.MotoConnSystemUpTime
+        }, 1);
+}
+
+async function _collectDownstreamInfo(client) {
+    const response = await client.getDownstreamChannelInfoParsed();
+
+    response
         .forEach(x => {
             const labels = {
                 channel: x.channel,
@@ -34,8 +70,12 @@ export default async function collect() {
             downstreamLockStatus
                 .set(labels, x.lockStatus === 'Locked' ? 1 : 0);
         });
+}
 
-    upstreamInfo
+async function _collectUpstreamInfo(client) {
+    const response = await client.getUpstreamChannelInfoParsed();
+
+    response
         .forEach(x => {
             const labels = {
                 channel: x.channel,
@@ -51,9 +91,28 @@ export default async function collect() {
             upstreamLockStatus
                 .set(labels, x.lockStatus === 'Locked' ? 1 : 0);
         });
-
-    return Prometheus.register;
 }
+
+const deviceInfo = new Prometheus.Gauge({
+    name: 'moto_device_info',
+    help: 'Device info',
+    labelNames: [
+        'spec_version',
+        'hardware_version',
+        'software_version',
+        'customer_version',
+        'mac_address',
+        'serial_number'
+    ]
+});
+
+const connectionInfo = new Prometheus.Gauge({
+    name: 'moto_connection_info',
+    help: 'Connection info',
+    labelNames: [
+        'uptime'
+    ]
+});
 
 const labelNames = [
     'channel',
