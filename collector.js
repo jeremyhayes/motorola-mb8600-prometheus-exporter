@@ -14,7 +14,7 @@ export default async function collect() {
     // parallelize calls to update metrics
     await Promise.all([
         _collectDeviceInfo(client),
-        _collectConnectionInfo(client),
+        // _collectConnectionInfo(client),
         _collectDownstreamInfo(client),
         _collectUpstreamInfo(client)
     ]);
