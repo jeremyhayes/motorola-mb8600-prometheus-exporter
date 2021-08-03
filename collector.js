@@ -3,7 +3,7 @@ import Prometheus from 'prom-client';
 
 export default async function collect() {
     const client = new HnapClient(
-        process.env.MODEM_BASE_URL || 'http://192.168.42.1',
+        process.env.MODEM_BASE_URL || 'http://192.168.100.1',
         !!process.env.MODEM_IGNORE_SSL
     );
     await client.login(
