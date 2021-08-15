@@ -25,4 +25,4 @@ EXPOSE $PORT
 # copy runtime files
 COPY --from=builder /app/source ./
 
-CMD [ "node", "server.js" ]
+ENTRYPOINT docker-entrypoint.sh
