@@ -25,4 +25,4 @@ EXPOSE $PORT
 # copy runtime files
 COPY --from=builder /app/source ./
 
-ENTRYPOINT docker-entrypoint.sh
+ENTRYPOINT ./docker-entrypoint.sh
