@@ -1,6 +1,6 @@
 {
   "name": "motorola-mb8600-prometheus-exporter",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "",
   "private": true,
   "main": "index.js",
