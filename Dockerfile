@@ -1,4 +1,4 @@
-FROM node:20 as builder
+FROM node:lts as builder
 
 WORKDIR /app/source
 
@@ -10,7 +10,7 @@ RUN npm install
 COPY . .
 
 
-FROM node:20-alpine as final
+FROM node:lts-alpine as final
 
 WORKDIR /app
 
