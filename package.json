@@ -15,6 +15,6 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "motorola-mb8600-client": "github:jeremyhayes/motorola-mb8600-client#db3bd61",
-    "prom-client": "^15.1.0"
+    "prom-client": "^15.1.1"
   }
 }
